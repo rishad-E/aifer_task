@@ -17,7 +17,7 @@ class DownloadBox extends StatelessWidget {
       backgroundColor: kblack.withOpacity(0.7),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       elevation: 30,
-      title: const Center(child: Text("Delete Task")),
+      title: Center(child: Text("Download", style: TextStyle(color: kwhite))),
       content: Text(
         'Download this Image to Gallery',
         style: TextStyle(color: kwhite),
@@ -41,7 +41,7 @@ class DownloadBox extends StatelessWidget {
             } catch (e) {
               log(e.toString(), name: 'downlad error');
             }
-            Get.back();
+            Navigator.pop(context);
           },
         )
       ],
