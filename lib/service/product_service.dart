@@ -14,8 +14,8 @@ class ProductService {
         '$_baseUrl/photos',
         queryParameters: {
           "client_id": _accessKey,
-          'page': offset, // Adjust pagination parameter
-          'per_page': 15, // Limit items per page
+          'page': offset,
+          'per_page': 10,
         },
         options: Options(validateStatus: (status) => status! < 599),
       );

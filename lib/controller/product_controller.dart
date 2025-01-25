@@ -19,15 +19,12 @@ class ProductController extends GetxController {
 
   RxList<ProductModel> get photos => _photos;
   RxBool get isLoading => _isLoading;
-  // int _currentPage = 1;
-  // int get currentPage => _currentPage;
   int get offset => _offset;
 
   @override
   void onInit() {
     super.onInit();
     fetchProducts();
-    // scrollController.addListener(_onScroll);
   }
 
   void refreshPage() {
@@ -37,7 +34,6 @@ class ProductController extends GetxController {
   }
 
   Future<void> fetchProducts() async {
-    log('called', name: 'fetchprouduct');
     if (_isLoading.value) return;
     _isLoading.value = true;
     update(['update-product']);
@@ -45,7 +41,7 @@ class ProductController extends GetxController {
       final data = await _service.getAllPhotos(offset: _offset);
       if (data != null && data.isNotEmpty) {
         _photos.addAll(data);
-        _offset++; // Incrementing offset for the next page
+        _offset++; 
       }
     } catch (e) {
       log(e.toString(), name: 'error controller');
