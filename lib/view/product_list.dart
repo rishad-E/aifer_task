@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:aifer_task/controller/product_controller.dart';
 import 'package:aifer_task/utils/common/color.dart';
 import 'package:aifer_task/widgets/alert_box.dart';
@@ -87,14 +89,15 @@ class _ProductListState extends State<ProductList> {
                         child: ProductContainer(
                           image: data.urls!.raw.toString(),
                           name: data.altDescription.toString(),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => DownloadBox(
-                                imageUrl: data.urls!.raw.toString(),
-                                name: data.altDescription.toString(),
-                              ),
-                            );
+                          onPressed: () async {
+                            try {
+                              await c.downloadImage(
+                                data.urls!.raw.toString(),
+                                data.altDescription.toString(),
+                              );
+                            } catch (e) {
+                              log(e.toString(), name: 'downlad error');
+                            }
                           },
                         ),
                       );
