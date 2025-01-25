@@ -5,14 +5,17 @@ import 'package:get/get.dart';
 
 void main() {
   Get.put(ProductController());
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+  // final c = Get.find<ProductController>();
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      // onInit: () => c.fetchProducts(),
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

@@ -6,9 +6,7 @@ import 'package:aifer_task/service/product_service.dart';
 import 'package:aifer_task/utils/common/color.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ProductController extends GetxController {
   final ProductService _service = ProductService();
@@ -52,20 +50,20 @@ class ProductController extends GetxController {
   }
 
   Future<void> downloadImage(String imageUrl, String name) async {
-    await permissionRequest();
-    var status = await Permission.storage.request();
-    log('storage=>${status.isGranted.toString()}');
-    if (!status.isGranted) {
-      Get.snackbar(
-        "Permission Denied",
-        "Storage permission is required to download images.",
-        snackPosition: SnackPosition.TOP,
-        duration: const Duration(seconds: 2),
-        backgroundColor: kred.withOpacity(0.7),
-        colorText: kwhite,
-      );
-      return;
-    } else {
+    // await permissionRequest();
+    // var status = await Permission.storage.request();
+    // log('storage=>${status.isGranted.toString()}');
+    // if (!status.isGranted) {
+    //   Get.snackbar(
+    //     "Permission Denied",
+    //     "Storage permission is required to download images.",
+    //     snackPosition: SnackPosition.TOP,
+    //     duration: const Duration(seconds: 2),
+    //     backgroundColor: kred.withOpacity(0.7),
+    //     colorText: kwhite,
+    //   );
+    //   return;
+    // } else {
       Directory directory = Directory('/storage/emulated/0/Download');
       if (!await directory.exists()) {
         log('directory not exists=>$directory');
@@ -81,7 +79,6 @@ class ProductController extends GetxController {
         log('directory exists=>$directory and ImageUrl=>$imageUrl');
         String savePath = '${directory.path}/$name.jpg';
         await Dio().download(imageUrl, savePath);
-        await GallerySaver.saveImage(savePath, albumName: "Unsplash Images");
         Get.snackbar(
           "Downloaded",
           "Image downloaded to gallery",
@@ -91,38 +88,38 @@ class ProductController extends GetxController {
           colorText: kwhite,
         );
       }
-    }
+    // }
   }
 
-  Future<void> permissionRequest() async {
-    if (Platform.isAndroid) {
-      if (await Permission.storage.isGranted) {
-        return;
-      } else {
-        var status = await Permission.storage.request();
-        if (status.isGranted) {
-          return;
-        } else if (status.isDenied) {
-          status = await Permission.storage.request();
-          if (status.isGranted) {
-            return;
-          } else if (status.isPermanentlyDenied) {
-            await openAppSettings();
-            if (await Permission.storage.isGranted) {
-              return;
-            } else {
-              Get.snackbar(
-                "Permission Permanently Denied",
-                "Storage permission is required to download images.",
-                snackPosition: SnackPosition.TOP,
-                duration: const Duration(seconds: 2),
-                backgroundColor: kred.withOpacity(0.7),
-                colorText: kwhite,
-              );
-            }
-          }
-        }
-      }
-    }
-  }
+  // Future<void> permissionRequest() async {
+  //   if (Platform.isAndroid) {
+  //     if (await Permission.storage.isGranted) {
+  //       return;
+  //     } else {
+  //       var status = await Permission.storage.request();
+  //       if (status.isGranted) {
+  //         return;
+  //       } else if (status.isDenied) {
+  //         status = await Permission.storage.request();
+  //         if (status.isGranted) {
+  //           return;
+  //         } else if (status.isPermanentlyDenied) {
+  //           await openAppSettings();
+  //           if (await Permission.storage.isGranted) {
+  //             return;
+  //           } else {
+  //             Get.snackbar(
+  //               "Permission Permanently Denied",
+  //               "Storage permission is required to download images.",
+  //               snackPosition: SnackPosition.TOP,
+  //               duration: const Duration(seconds: 2),
+  //               backgroundColor: kred.withOpacity(0.7),
+  //               colorText: kwhite,
+  //             );
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }

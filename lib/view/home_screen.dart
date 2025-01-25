@@ -25,17 +25,23 @@ class HomePage extends StatelessWidget {
               ],
             ),
             choiceBox(height: 25),
-            const Expanded(
+             const Expanded(
               child: Stack(
                 children: [
                   ProductList(),
-                  Positioned(bottom: 20, left: 0, right: 0, child: BottomNav()),
+                  Positioned(
+                    bottom: 20,
+                    left: 0,
+                    right: 0,
+                    child: BottomNav()
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
+     
     );
   }
 }

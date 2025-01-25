@@ -1,8 +1,6 @@
 import 'dart:developer';
-
 import 'package:aifer_task/controller/product_controller.dart';
 import 'package:aifer_task/utils/common/color.dart';
-import 'package:aifer_task/widgets/alert_box.dart';
 import 'package:aifer_task/widgets/loading_indicator.dart';
 import 'package:aifer_task/widgets/product_container.dart';
 import 'package:flutter/material.dart';
@@ -19,13 +17,13 @@ class ProductList extends StatefulWidget {
 class _ProductListState extends State<ProductList> {
   ScrollController scrollController = ScrollController();
 
-  final c = Get.put(ProductController());
+  final c = Get.find<ProductController>();
   @override
   void initState() {
     super.initState();
     scrollController.addListener(_scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      c.fetchProducts();
+    c.fetchProducts();
     });
   }
 
