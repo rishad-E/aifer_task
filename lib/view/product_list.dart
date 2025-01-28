@@ -1,11 +1,11 @@
 import 'dart:developer';
-import 'package:aifer_task/controller/product_controller.dart';
+import 'package:aifer_task/controller/product_provider.dart';
 import 'package:aifer_task/utils/common/color.dart';
 import 'package:aifer_task/widgets/loading_indicator.dart';
 import 'package:aifer_task/widgets/product_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({super.key});
@@ -17,22 +17,14 @@ class ProductList extends StatefulWidget {
 class _ProductListState extends State<ProductList> {
   ScrollController scrollController = ScrollController();
 
-  final c = Get.find<ProductController>();
   @override
   void initState() {
     super.initState();
+    //scroll controller to listen when scrolling comes to the end of the lsit
     scrollController.addListener(_scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-    c.fetchProducts();
+      context.read<ProductProvider>().fetchProducts();
     });
-  }
-
-  void _scrollListener() {
-    if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 200 &&
-        !c.isLoading.value) {
-      c.fetchProducts();
-    }
   }
 
   @override
@@ -61,10 +53,10 @@ class _ProductListState extends State<ProductList> {
                   ),
                 ),
               ),
-              GetBuilder<ProductController>(
-                id: 'update-product',
-                builder: (c) {
-                  if (c.isLoading.value && c.photos.isEmpty) {
+              Consumer<ProductProvider>(
+                builder: (context, val, child) {
+                  if (val.isLoading && val.photos.isEmpty) {
+                    log('val.isloadig or photos.isempty case');
                     return const ShimmerEffect();
                   }
                   return MasonryGridView.builder(
@@ -73,32 +65,42 @@ class _ProductListState extends State<ProductList> {
                             crossAxisCount: 2),
                     mainAxisSpacing: 8,
                     crossAxisSpacing: 8,
-                    itemCount: c.photos.length + (c.isLoading.value ? 1 : 0),
+                    itemCount: val.photos.length + (val.isLoading ? 1 : 0),
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      if (index == c.photos.length) {
-                        // Show a loading indicator at the bottom
+                      if (index == val.photos.length) {
+                        log('index == val.photos.length');
                         return const SingleShimmerEfect();
                       }
-                      final data = c.photos[index];
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: ProductContainer(
-                          image: data.urls!.raw.toString(),
-                          name: data.altDescription.toString(),
-                          onPressed: () async {
-                            try {
-                              await c.downloadImage(
-                                data.urls!.raw.toString(),
-                                data.altDescription.toString(),
-                              );
-                            } catch (e) {
-                              log(e.toString(), name: 'downlad error');
-                            }
-                          },
-                        ),
-                      );
+                      final data = val.photos[index];
+                      return index == 9
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: ProductContainer(
+                                image: val.photos.first.urls!.raw.toString(),
+                                name:
+                                    '10th item again showing the first item in the list',
+                                onPressed: () {},
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: ProductContainer(
+                                image: data.urls!.raw.toString(),
+                                name: data.altDescription.toString(),
+                                onPressed: () async {
+                                  try {
+                                    await val.downloadImage(
+                                        data.urls!.raw.toString(),
+                                        data.altDescription.toString(),
+                                        context);
+                                  } catch (e) {
+                                    log(e.toString(), name: 'downlad error');
+                                  }
+                                },
+                              ),
+                            );
                     },
                   );
                 },
@@ -108,6 +110,14 @@ class _ProductListState extends State<ProductList> {
         ),
       ),
     );
+  }
+
+  void _scrollListener() async {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      // when scrolling comes to maxend function gets called again, showing another set of products
+      await context.read<ProductProvider>().fetchProducts();
+    }
   }
 
   @override

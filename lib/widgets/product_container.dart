@@ -1,22 +1,18 @@
 import 'dart:math';
-
-import 'package:aifer_task/controller/product_controller.dart';
 import 'package:aifer_task/widgets/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProductContainer extends StatelessWidget {
   final String image;
   final String name;
   final void Function()? onPressed;
-  ProductContainer(
+  const ProductContainer(
       {super.key,
       required this.image,
       required this.name,
       required this.onPressed});
-  final controller = Get.put(ProductController());
   @override
   Widget build(BuildContext context) {
     return Container(
